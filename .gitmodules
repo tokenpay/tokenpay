@@ -1,0 +1,11 @@
+[submodule "tor"]
+	path = tor
+	url = https://github.com/tokenpay/tor
+	branch = master
+[submodule "leveldb"]
+	path = leveldb
+	url = https://github.com/tokenpay/leveldb
+	branch = master
+[submodule "db4.8"]
+	path = db4.8
+	url = https://github.com/tokenpay/db4.8

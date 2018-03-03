@@ -1,0 +1,52 @@
+src/*.exe
+src/tokenpay
+src/tokenpayd
+src/test_tokenpay
+src/build.h
+src/.libs
+.*.swp
+*.*~*
+*.bak
+*.rej
+*.orig
+*.o
+*.P
+*.dat
+*.autosave
+.tokenpay
+#compilation and Qt preprocessor part
+*.qm
+tokenpay
+#resources cpp
+qrc_*.cpp
+#moc
+moc_*.cpp
+#ui
+ui_*.h
+#qt creator
+*.pro.user
+#mac specific
+.DS_Store
+build
+db4.8/build_unix
+.deps
+.dirstamp
+Makefile
+Makefile.in
+config.log
+configure
+depcomp
+missing
+install-sh
+config.guess
+config.status
+config.sub
+test-driver
+aclocal.m4
+autom4te.cache
+ar-lib
+compile
+libtool
+ltmain.sh
+
+!db4.8/build_unix/configure
