@@ -1,6 +1,6 @@
 name: tokenpay
 version: "1.0"
-summary: TokenPay wallet
+summary: TokenPay wallet GUI
 description: TokenPay wallet
 grade: stable
 confinement: classic
