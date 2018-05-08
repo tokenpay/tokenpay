@@ -8,6 +8,8 @@ Specifications:
 * 10 minute PoSv3 difficulty retarget
 * RPC Port = 8800
 * P2P Port = 8801
+* TESTNET RPC Port = 16600
+* TESTNET P2P Port = 16601
 
 
 Inside:
