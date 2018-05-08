@@ -1,0 +1,78 @@
+# CLI only, no GUI. Managed to build this on a Raspberry Pi 3
+# as well. So this builds cleanly on armhf, and x86_64
+name: tokenpayd
+version: "1.0"
+summary: TokenPay wallet headless
+description: TokenPay wallet
+grade: stable
+confinement: classic
+apps:
+  tokenpayd:
+    command: bin/tokenpayd
+    environment:
+      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/local/lib
+    plugs:
+      - network
+      - network-bind
+parts:
+  boost:
+    # this needs to be built against the new openssl
+    plugin: nil
+    source: https://dl.bintray.com/boostorg/release/1.63.0/source/boost_1_63_0.tar.gz
+    build-packages:
+      - debhelper
+      - dpkg-dev
+      - dctrl-tools
+      - zlib1g-dev
+      - libbz2-dev
+      - libicu-dev
+      - mpi-default-dev
+      - bison
+      - flex
+      - docbook-to-man
+      - help2man
+      - xsltproc
+      - doxygen
+      - dh-python
+      - g++
+      - g++-5
+      - python
+      - python-all-dev
+      - python3
+      - python3-all-dev
+    build: |
+      ./bootstrap.sh --prefix=$SNAPCRAFT_PART_INSTALL/usr
+    install: |
+      ./bjam install -j4
+    after: [openssl]
+  openssl:
+    # tokenpay needs openssl 1.1 to build
+    plugin: nil
+    build: |
+      ./config --prefix=$SNAPCRAFT_PART_INSTALL/usr
+      make -j4
+    install: |
+      make install
+    source: https://github.com/openssl/openssl.git
+    source-type: git
+    source-branch: OpenSSL_1_1_0-stable
+  libevent:
+    # this needs to be built against the new openssl
+    plugin: autotools
+    source: https://github.com/libevent/libevent.git
+    source-type: git
+    source-branch: release-2.1.8-stable
+    after: [openssl]
+  tokenpay:
+    plugin: autotools
+    source-type: git
+    build-packages:
+      - libseccomp-dev
+      - libcap-dev
+      - pkg-config
+    stage-packages:
+      - zlib1g
+      - shared-mime-info
+    source: https://github.com/tokenpay/tokenpay
+    after: [libevent, boost]
+
