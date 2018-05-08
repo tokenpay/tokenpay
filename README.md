@@ -10,7 +10,9 @@ Specifications:
 * P2P Port = 8801
 * TESTNET RPC Port = 16600
 * TESTNET P2P Port = 16601
-
+* TESTNET Coinbase Maturity: 10
+* TESTNET Min stake age: 1 hour
+* TESTNET Min stake age: ~10 minutes
 
 Inside:
 ==========================
