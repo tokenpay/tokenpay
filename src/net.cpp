@@ -1082,12 +1082,13 @@ void ThreadSocketHandler()
 // hidden service seeds
 static const char *strMainNetOnionSeed[][1] = {
     {"cvb2ovc6tcntozc5.onion"},
-	{"xfkfn7vszswzito2.onion"},
+    {"xfkfn7vszswzito2.onion"},
     {NULL}
 };
 
 static const char *strTestNetOnionSeed[][1] = {
-    {NULL}
+	{"zspbysr6rpj7g7sb.onion"},
+	{NULL}
 };
 
 void ThreadOnionSeed()
