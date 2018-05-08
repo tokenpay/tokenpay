@@ -42,7 +42,7 @@ make && make install
 
 (now, we clone and compile the tokenpay source code!)
 
-git clone --recurse-submodules https://github.com/tokenpay/tokenpay
+git clone --recurse-submodules https://github.com/tokenpay/tokenpay && cd tokenpay
 
 sudo apt-get install build-essential \
     libtool autotools-dev automake pkg-config zlib1g-dev libevent-dev \
