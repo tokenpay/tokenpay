@@ -3,14 +3,19 @@
 name: tokenpayd-v2
 version: "1.0"
 summary: TokenPay wallet headless
-description: TokenPay wallet
+description: |
+  TokenPay is a decentralized and self-verifying payment platform project. Based entirely on mathematics
+  it is designed to enable secure transactions between multiple parties. With maximum user security as
+  the focal point, the system is accessed exclusively through the encrypted Tor Browser. Transactions are
+  conducted with its own proprietary and untraceable digital asset called TPAY that is embedded with the
+  latest and most advanced safety features. These characteristics include a stealth addressing system,
+  encrypted messaging, completely anonymous trading and a uniquely designed hashing algorithm that enables
+  fast and secure confirmations under any conditions.
 grade: stable
 confinement: strict
 apps:
   tokenpayd-v2:
     command: bin/tokenpayd
-    environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/local/lib
     plugs:
       - network
       - network-bind
@@ -40,18 +45,16 @@ parts:
       - python-all-dev
       - python3
       - python3-all-dev
-    build: |
+    override-build: |
       ./bootstrap.sh --prefix=$SNAPCRAFT_PART_INSTALL/usr
-    install: |
       ./bjam install -j4
     after: [openssl]
   openssl:
     # tokenpay needs openssl 1.1 to build
     plugin: nil
-    build: |
+    override-build: |
       ./config --prefix=$SNAPCRAFT_PART_INSTALL/usr
       make -j4
-    install: |
       make install
     source: https://github.com/openssl/openssl.git
     source-type: git
@@ -64,8 +67,18 @@ parts:
     source-branch: release-2.1.8-stable
     after: [openssl]
   tokenpay:
-    plugin: autotools
+    plugin: nil
+    override-build: |
+      ./autogen.sh
+      ./configure --prefix=$SNAPCRAFT_PART_INSTALL/usr
+      make -j4
+      mkdir -p $SNAPCRAFT_PART_INSTALL/bin
+      cp src/tokenpayd $SNAPCRAFT_PART_INSTALL/bin
     source-type: git
+    prime:
+      - bin/tokenpayd
+      - usr/lib/*
+      - lib/*
     build-packages:
       - libseccomp-dev
       - libcap-dev
@@ -75,4 +88,3 @@ parts:
       - shared-mime-info
     source: https://github.com/gabriel-samfira/tokenpay
     after: [libevent, boost]
-
