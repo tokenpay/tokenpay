@@ -3,22 +3,19 @@ version: "1.0"
 summary: TokenPay wallet GUI
 description: TokenPay wallet
 grade: stable
-confinement: classic
+confinement: strict
 apps:
   tokenpay:
-    command: bin/tokenpay
-    environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/local/lib
+    command: desktop-launch tokenpay
     plugs:
       - desktop
+      - home
       - wayland
       - x11
       - network
       - network-bind
   tokenpayd:
     command: bin/tokenpayd
-    environment:
-      LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/local/lib
     plugs:
       - desktop
       - wayland
@@ -74,23 +71,24 @@ parts:
     source-type: git
     source-branch: release-2.1.8-stable
     after: [openssl]
-  dummy:
-    # just a dummy part that simply adds the KDE neon repo. We need this
-    # to get a newer version of Qt5. The default one in ubuntu 16.04 segfaults
-    plugin: nil
-    build: |
-      apt-add-repository http://archive.neon.kde.org/user
-      apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E6D4736255751E5D
-      apt-get update
+  desktop-qt5:
+    stage-packages:
+      - libxkbcommon0
+      - ttf-ubuntu-font-family
+      - dmz-cursor-theme
+      - light-themes
+      - adwaita-icon-theme
+      - gnome-themes-standard
+      - shared-mime-info
+      - libqt5gui5
+      - libgdk-pixbuf2.0-0
+      - libqt5svg5 # for loading icon themes which are svg
+      - locales-all
+      - xdg-user-dirs
   tokenpay:
     plugin: autotools
-    prepare: |
-      # upgrade the local packages. This should upgrade the Qt5 packages that
-      # were installed by the build-packages stanza. 
-      apt-get -y dist-upgrade
     configflags:
       - --enable-gui
-      - CPPFLAGS=-I$SNAPCRAFT_PART_INSTALL/usr/include/x86_64-linux-gnu/qt5/QtWebKitWidgets -I$SNAPCRAFT_STAGE/include -I$SNAPCRAFT_STAGE/usr/include -I$SNAPCRAFT_PART_INSTALL/usr/include/x86_64-linux-gnu/qt5/QtWebKit -I$SNAPCRAFT_PART_INSTALL/usr/include/x86_64-linux-gnu/qt5
     source-type: git
     build-packages:
       - libqt5webkit5-dev
@@ -110,15 +108,7 @@ parts:
       - libqt5dbus5
       - libqt5widgets5
       - qt5-default
-      - libxkbcommon0
-      - ttf-ubuntu-font-family
-      - dmz-cursor-theme
-      - light-themes
-      - shared-mime-info
       - libqt5webkit5
-      - libqt5gui5
       - libqt5webkit5-dev
-      - libgdk-pixbuf2.0-0
-      - libqt5svg5 # for loading icon themes which are svg
-    source: https://github.com/tokenpay/tokenpay
-    after: [libevent, boost, dummy]
+    source: https://github.com/gabriel-samfira/tokenpay
+after: [libevent, boost, desktop-qt5]

@@ -1,13 +1,13 @@
 # CLI only, no GUI. Managed to build this on a Raspberry Pi 3
 # as well. So this builds cleanly on armhf, and x86_64
-name: tokenpayd
+name: tokenpayd-v2
 version: "1.0"
 summary: TokenPay wallet headless
 description: TokenPay wallet
 grade: stable
-confinement: classic
+confinement: strict
 apps:
-  tokenpayd:
+  tokenpayd-v2:
     command: bin/tokenpayd
     environment:
       LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/usr/local/lib
@@ -73,6 +73,6 @@ parts:
     stage-packages:
       - zlib1g
       - shared-mime-info
-    source: https://github.com/tokenpay/tokenpay
+    source: https://github.com/gabriel-samfira/tokenpay
     after: [libevent, boost]
 
