@@ -56,6 +56,27 @@ sudo apt-get install build-essential \
 ```
 
 
+SNAP BUILD NOTES:
+================
+
+TO INSTALL:
+```
+sudo apt-get update && sudo apt-get upgrade && sudo apt-get install snap git
+```
+```
+sudo snap install tokenpayd-v2
+```
+
+DIRECTORY LOCATION:
+
+```
+$HOME/snap/tokenpayd-v2/current/.tokenpay/
+```
+
+Snap source files found in tokenpay/snap
+
+
+
 
 LINKS
 ==========================
