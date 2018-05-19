@@ -1,84 +1,196 @@
-Specifications:
-==========================
-* Total number of coins: 25,000,000 TPAY
-* Stake interest: 5% annual static inflation
-* Confirmations: 6 blocks
-* Coinbase Maturity: 100 blocks
-* Min stake age: 2 hours
-* 10 minute PoSv3 difficulty retarget
-* RPC Port = 8800
-* P2P Port = 8801
-* TESTNET RPC Port = 16600
-* TESTNET P2P Port = 16601
-* TESTNET Coinbase Maturity: 10
-* TESTNET Min stake age: 1 hour
-* TESTNET Min stake age: ~10 minutes
+# Specifications:
 
-Inside:
-==========================
-* Tor Network on start up
-* Ring Signatures for anonymous transactions
-* Dual key stealth addresses
-* ‘Zero Knowledge’ proofs
-* Full decentralization
+  * Total number of coins: 25,000,000 TPAY
+  * Stake interest: 5% annual static inflation
+  * Confirmations: 6 blocks
+  * Coinbase Maturity: 100 blocks
+  * Min stake age: 2 hours
+  * 10 minute PoSv3 difficulty retarget
+  * RPC Port = 8800
+  * P2P Port = 8801
+  * TESTNET RPC Port = 16600
+  * TESTNET P2P Port = 16601
+  * TESTNET Coinbase Maturity: 10
+  * TESTNET Min stake age: 10 minutes
 
-UNIX BUILD NOTES
-================
+# Inside:
 
-To Build  (tested on ubuntu 17.10)
---------
-```
-Install dependencies: 
+  * Tor Network on start up
+  * Ring Signatures for anonymous transactions
+  * Dual key stealth addresses
+  * ‘Zero Knowledge’ proofs
+  * Full decentralization
 
-(first we will install openssl 1.1)
+# LINKS
 
-wget https://www.openssl.org/source/openssl-1.1.0e.tar.gz
-
-tar xzf openssl-1.1.0e.tar.gz
-
-cd openssl-1.1.0e
-
-./config -Wl,--enable-new-dtags,-rpath,'$(LIBRPATH)'
-
-make && make install
-
-(now, we clone and compile the tokenpay source code!)
-
-git clone --recurse-submodules https://github.com/tokenpay/tokenpay && cd tokenpay
-
-sudo apt-get install build-essential \
-    libtool autotools-dev automake pkg-config zlib1g-dev libevent-dev \
-    bsdmainutils git libboost-all-dev libseccomp-dev libcap-dev libminiupnpc-dev libqt5gui5 \
-    libqt5core5a libqt5webkit5-dev libqt5dbus5 qttools5-dev \
-    qttools5-dev-tools libprotobuf-dev protobuf-compiler libqrencode-dev
-
-./autogen.sh && ./configure && make
-```
+  * [Official Website](http://www.tokenpay.com/)
 
 
-SNAP BUILD NOTES:
-================
+# Installing TokenPay
 
-TO INSTALL:
-```
-sudo apt-get update && sudo apt-get upgrade && sudo apt-get install snap git
-```
-```
+TokenPay has snaps available [with GUI](https://snapcraft.io/tokenpay) and [without GUI](https://snapcraft.io/tokenpayd-v2). Snaps are universal Linux packages that should run on any modern Linux distribution. Consult the [documentation for your own distribution](https://docs.snapcraft.io/core/install) to find out how to install ```snapd``` and gain access to the [snap store](https://snapcraft.io/store)
+
+If you are interested in installing and running the daemon, run:
+
+```bash
 sudo snap install tokenpayd-v2
 ```
 
-DIRECTORY LOCATION:
+Which will install just the daemon, without GUI. This is useful if you are planning on running TokenPay on a server. Desktop users will probably be more comfortable running the GUI version. You can install the GUI version by running:
+
+```bash
+sudo snap install tokenpay
+```
+
+Both snaps are built using the ```strict``` confinement setting. That means that the wallet itself will only have access to the network and just a few folders on disk. Everything else is restricted to the binary itself, but it has enough access to the system to perform its function, while keeping you safe.
+
+The strict confinement level also means that the config files, and therefor the wallet file will be situated in:
+
+```bash
+# The GUI snap will save its files in:
+$HOME/snap/tokenpay/current/.tokenpay
+
+# The daemon snap will save its file sin:
+$HOME/snap/tokenpayd-v2/current/.tokenpay
 
 ```
-$HOME/snap/tokenpayd-v2/current/.tokenpay/
+
+# Building TokenPay (including GUI)
+
+It's worth mentioning that you only have to build from source, if you are testing a change, or if you simply prefer it that way. Otherwise, simply follow the above instructions to get up and running.
+
+## Generic Unix build instructions
+
+It's recommended you use Ubuntu 18.04, which already has the needed build dependencies, and their proper version in the official repositories. If you are running on Ubuntu 16.04, you will need to install an updated version of ```OpenSSL``` and ```Boost```. 
+
+### Clone the repository
+
+Install git:
+
+```bash
+sudo apt-get install git
 ```
 
-Snap source files found in tokenpay/snap
+Clone the repository:
+
+```bash
+# Create a workspace
+mkdir $HOME/build
+cd $HOME/build
+
+git clone --recurse-submodules https://github.com/tokenpay/tokenpay
+cd $HOME/build/tokenpay
+```
+
+### Install dependencies
+
+Run the following command to install the needed dependencies:
+
+```bash
+sudo apt-get install build-essential \
+     libtool autotools-dev automake \
+     pkg-config zlib1g-dev libevent-dev \
+     bsdmainutils git libboost-all-dev \
+     libseccomp-dev libcap-dev libminiupnpc-dev \
+     libqt5gui5 libqt5core5a libqt5webkit5-dev \
+     libqt5dbus5 qttools5-dev qttools5-dev-tools \
+     libprotobuf-dev protobuf-compiler libqrencode-dev \
+     libssl-dev qt5-default
+```
+
+### Compile Tokenpay
+
+Configure the toolchain:
+
+```bash
+./autogen.sh
+./configure --enable-gui
+```
+
+Compile the code:
+
+```bash
+make -j8
+```
+
+The ```-j``` option specifies the number of compile jobs to run in parallel. I usually run 2 jobs per CPU core. So if you are sporting a quad core CPU, feel free to use ```-j8```. Otherwise, adapt this value to whatever works best for your setup.
+
+After the build process completes, you should have two binaries in the ```src``` folder:
+
+  * tokenpayd - just the daemon, no GUI
+  * tokenpay - GUI version
+
+Simply copy any one of these in your ```$PATH```.
 
 
+# Building TokenPay snap packages
 
+This is the preferred way of building TokenPay. At the end of this process, you will have a universal package that you can copy to any modern Linux distribution and install it without worrying about dependencies. Snaps are self contained packages, that include all needed dependencies.
 
-LINKS
-==========================
-* [Official Website](http://www.tokenpay.com/)
+## Prepare the build environment
 
+### Install LXD and snapcraft
+
+[LXD](https://linuxcontainers.org/) is the evolution of ```LXC```, which stands for ```linux containers```. It allows us to safely build the code inside a disposable container, that gets torn down after the package gets generated. Don't worry, the process is automatic, but we do need to install LXD first. Feel free to [check the documentation specific for your distribution](https://linuxcontainers.org/lxd/getting-started-cli/) and install ```LXD```.
+
+For Ubuntu 18.04, the installation process is straight forward. Install ```zfsutils```:
+
+```bash
+sudo apt-get install zfsutils-linux
+```
+
+Then we can install and initialize ```LXD```:
+
+```bash
+sudo snap install lxd
+```
+
+Configure ```LXD```:
+
+```bash
+sudo lxd init
+```
+
+Simply follow the wizard. In most cases, defaults should be enough.
+
+Now time to install ```snapcraft```:
+
+```bash
+sudo snap install --classic snapcraft
+``` 
+
+### Build the snaps
+
+At this point you should have everything you need to build the snap. So let's get cracking.
+
+There is a ```snap``` folder inside the source tree, that has two ```snapcraft``` recipes and assets needed to generate the packages. Change directory to this folder: 
+
+```bash
+cd $HOME/build/tokenpay/snap
+```
+
+Snapcraft looks for a file called ```snapcraft.yaml``` in the current folder. It uses that file to generate the package from scratch. To build the GUI version, we must link or copy the appropriate recipe to ```snapcraft.yaml```:
+
+```bash
+ln -s snapcraft-gui.yaml snapcraft.yaml
+```
+
+Now all we have to do is run:
+
+```bash
+snapcraft cleanbuild
+```
+
+This will spawn a temporary container running Ubuntu 16.04, build any needed dependencies, then TokenPay, and in the end, generate a snap package. After the process is complete, the snap package will be copied over to your current folder, and the temporary container will be deleted.
+
+### Installing the generated packages
+
+Installing packages from outside the snap store requires an extra flag:
+
+```bash
+# For the GUI version
+sudo snap install --dangerous tokenpay_1.0_amd64.snap
+
+# For the non GUI version
+sudo snap install --dangerous tokenpayd_1.0_amd64.snap
+```
