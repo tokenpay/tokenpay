@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=TokenPay Wallet
+Exec=tokenpay
+Type=Application
+Icon=${SNAP}/meta/gui/icon.svg 
+
+[scalable/apps]
+Size=48
+Type=Scalable
+MinSize=1
+MaxSize=256
+Context=Applications
