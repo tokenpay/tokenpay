@@ -1,9 +1,5 @@
-# Support
-For support please visit one of the links below:
 
-Email: Team@tokenpay.com
-
-# TokenPay RPC
+# TokenPay RPC Commands
 
 ## anoninfo
 
@@ -288,10 +284,12 @@ Decrypt and display all received messages.
 
 <aside class="warning">Warning: clear will delete all messages.</aside>
 
+# Support
+For support please visit one of the links below:
 
+Email: Team@tokenpay.com
 
-
-
+# General Reference
 
 # JSON-RPC API Reference
 TokenPay has many new components meaning we also added extra API calls on top of the original [Bitcoin API.](¶https://bitcoin.org/en/developer-reference#bitcoin-core-apis)
