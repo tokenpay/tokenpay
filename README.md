@@ -12,7 +12,7 @@ RPC Port | 8801
 Blockchain Explorer | [Website](http://explorer.tpay.ai)
 
 
-### Testnet Specification
+### Testnet
 
 Specification | Value
 --- | ---
