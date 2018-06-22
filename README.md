@@ -1,17 +1,23 @@
-# Specifications:
+## Specification
 
-  * Total number of coins: 25,000,000 TPAY
-  * Stake interest: 5% annual static inflation
-  * Confirmations: 6 blocks
-  * Coinbase Maturity: 100 blocks
-  * Min stake age: 2 hours
-  * 10 minute PoSv3 difficulty retarget
-  * RPC Port = 8800
-  * P2P Port = 8801
-  * TESTNET RPC Port = 16600
-  * TESTNET P2P Port = 16601
-  * TESTNET Coinbase Maturity: 10
-  * TESTNET Min stake age: 10 minutes
+Specification | Value
+--- | ---
+Protocol | **PoSv3**
+Block Time | **60 seconds**
+Difficulty Re-target | **10 minutes**
+Nominal Stake Interest | **5% annually for the first year and 1% after**
+Min Stake Age | **2 hours** (no max age)
+P2P Port | 8800
+RPC Port | 8801
+Blockchain Explorer | [Website] (http://explorer.tpay.ai)
+
+### Transactions
+
+| Specification   | Value          |
+| --------------- | -------------- |
+| Min Fee         | **0.0001 TPAY** |
+| Confirmations   | **6**         |
+| Maturity        | **100**        |
 
 # Inside:
 
@@ -24,6 +30,52 @@
 # LINKS
 
   * [Official Website](http://www.tokenpay.com/)
+
+
+
+## Introduction
+
+TokenpayCore is the main engine on which all decentralized actions take place, it is used when referencing to the back end of the program and takes cares of the network bootstrapping and propogation of data throughout it. It is also in charge of synchronising and verifying the blockchain for each node to make sure it can participate in the network.
+
+The data being propogated are encrypted messages and transactions, you can find more information about the workings of these in other sections of this documentation.
+
+## HTML  (GUI)
+
+TokenPay has a HTML cryptobrowser at the core of its graphical user interface (GUI). One thing you may have noticed is that we strive for the best user experience (UX) and that involves a good graphical interface. We chose to use a combination of HTML and Javascript because this allows web designers and developers to help the project. They are very familiair with creating a good user experience through a simple yet beautiful interface.
+
+![Overview]
+
+![Wallet]
+
+## Hierarchical Deterministic Wallet (HD)
+
+The [Hierarchical Deterministic](https://bitcoin.org/en/glossary/hd-protocol) (HD) key creation and transfer protocol ([BIP32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)), allows users to create [child keys](https://bitcoin.org/en/glossary/child-key) from [parent keys](https://bitcoin.org/en/glossary/parent-key) in a hierarchy.
+In essence this means that you only have to back up your wallet once, all private keys are derived from the mnenomic seed (up to 24 words) and they can be retrieved anytime if you have the seed. This means that you'll never have to worry about backups as long as you have one, coins will never be lost.
+
+
+# Download
+
+## Desktop Wallet
+- Latest (https://tokenpay.app.box.com/v/tokenpaywindowswallet)
+
+## MAC Wallet 
+- Latest (https://tokenpay.app.box.com/v/TokenPayMACWallet)
+
+## Android Wallet
+- Latest (https://play.google.com/store/apps/details?id=com.tokenpay.wallet&hl=en)
+
+
+## Useful Paths
+
+### Windows
+```
+%appdata%\TokenPay
+```
+
+### OSX
+```
+~/Library/Application Support/TokenPay/ 
+```
 
 
 # Installing TokenPay
@@ -59,9 +111,13 @@ $HOME/snap/tokenpayd-v2/current/.tokenpay
 
 It's worth mentioning that you only have to build from source, if you are testing a change, or if you simply prefer it that way. Otherwise, simply follow the above instructions to get up and running.
 
+
+
 ## Generic Unix build instructions
 
 It's recommended you use Ubuntu 18.04, which already has the needed build dependencies, and their proper version in the official repositories. If you are running on Ubuntu 16.04, you will need to install an updated version of ```OpenSSL``` and ```Boost```. 
+
+
 
 ### Clone the repository
 
@@ -82,6 +138,8 @@ git clone --recurse-submodules https://github.com/tokenpay/tokenpay
 cd $HOME/build/tokenpay
 ```
 
+
+
 ### Install dependencies
 
 Run the following command to install the needed dependencies:
@@ -97,6 +155,9 @@ sudo apt-get install build-essential \
      libprotobuf-dev protobuf-compiler libqrencode-dev \
      libssl-dev qt5-default
 ```
+
+
+
 
 ### Compile Tokenpay
 
@@ -194,3 +255,19 @@ sudo snap install --dangerous tokenpay_1.0_amd64.snap
 # For the non GUI version
 sudo snap install --dangerous tokenpayd_1.0_amd64.snap
 ```
+
+
+# Contribute
+Code<br />
+TokenPay is controlled by all TokenPay users around the world. If you are a developer, you can use your super-powers to do good and contribute. The TokenPay project is hosted on GitHub. This is where developers work hard on the next version(s) of the software. To get involved with developing TokenPay, check out our detailed contributing guidelines. We credit all contributors to the TokenPay project in every major and minor release.<br />
+
+If you think you've found a bug or a problem with TokenPay, please let us know! First, search our issue tracker to search to see if someone has already reported the problem. If they haven't, click here to open a new issue, and fill out the template with as much information as possible. The more you can tell us about the problem and how it occurred, the more likely we are to fix it. <br />
+
+Please do not report security vulnerabilities publicly.<br />
+
+**How to report a bug**<br />
+Security-related issues<br />
+Contact the developers privately by sending an e-mail to Team@tokenpay.com with the details of the issue. Do not post the issue on github or anywhere else until the issue has been resolved.<br />
+
+Code issues<br />
+We would strongly prefer if you create a pull-request on Github in the proper repository with the necessary fix (along with your TPAY address to claim the bounty). For more information, see this link.<br />
