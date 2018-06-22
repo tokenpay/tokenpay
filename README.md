@@ -1,4 +1,6 @@
-## Specification
+# TOKENPAY [TPAY] Source Code
+
+## Specifications
 
 Specification | Value
 --- | ---
@@ -9,8 +11,6 @@ Nominal Stake Interest | **5% annually for the first year and 1% after**
 Min Stake Age | **2 hours** (no max age)
 P2P Port | 8800
 RPC Port | 8801
-Blockchain Explorer | [Click Here](http://explorer.tpay.ai)
-
 
 ### Testnet
 
@@ -21,7 +21,6 @@ Testnet P2P Port | 16601
 Testnet Coinbase Maturity | 10
 Testnet Min Stake Age | 10
 
-
 ### Transactions
 
 | Specification   | Value          |
@@ -30,18 +29,19 @@ Testnet Min Stake Age | 10
 | Confirmations   | **6**         |
 | Maturity        | **100**        |
 
-# Inside:
 
-  * Tor Network on start up
-  * Ring Signatures for anonymous transactions
-  * Dual key stealth addresses
-  * ‘Zero Knowledge’ proofs
-  * Full decentralization
+## Resources
 
-# LINKS
+* [Blockchain Explorer](http://explorer.tpay.ai)
+* [WhitePaper](https://www.tokenpay.com/whitepaper.pdf)
 
-  * [Official Website](http://www.tokenpay.com/)
+### Community
 
+* [Telegram](https://t.me/TokenPayTelegram)
+* [Discord](https://discord.gg/HFeehMe)
+* [Twitter](https://www.twitter.com/tokenpay/)
+* [Facebook](https://www.facebook.com/tokenpay/)
+* [Reddit](https://www.reddit.com/r/tokenpay/)
 
 
 # Wallet Download Links
