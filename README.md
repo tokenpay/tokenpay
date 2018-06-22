@@ -44,15 +44,15 @@ Testnet Min Stake Age | 10
 * [Reddit](https://www.reddit.com/r/tokenpay/)
 
 
-# Wallet Download Links
+## Wallet Download Links
 
-## Desktop Wallet
+### PC
 - Latest (https://tokenpay.app.box.com/v/tokenpaywindowswallet)
 
-## MAC Wallet 
+### OSX 
 - Latest (https://tokenpay.app.box.com/v/TokenPayMACWallet)
 
-## Android Wallet
+### Android
 - Latest (https://play.google.com/store/apps/details?id=com.tokenpay.wallet&hl=en)
 
 
