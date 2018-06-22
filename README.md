@@ -9,7 +9,7 @@ Nominal Stake Interest | **5% annually for the first year and 1% after**
 Min Stake Age | **2 hours** (no max age)
 P2P Port | 8800
 RPC Port | 8801
-Blockchain Explorer | [Website](http://explorer.tpay.ai)
+Blockchain Explorer | [Click Here](http://explorer.tpay.ai)
 
 
 ### Testnet
