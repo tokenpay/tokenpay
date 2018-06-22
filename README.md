@@ -243,7 +243,7 @@ TokenPay is controlled by all TokenPay users around the world. If you are a deve
 
 If you think you've found a bug or a problem with TokenPay, please let us know! First, search our issue tracker to search to see if someone has already reported the problem. If they haven't, click here to open a new issue, and fill out the template with as much information as possible. The more you can tell us about the problem and how it occurred, the more likely we are to fix it.
 
-Please do not report security vulnerabilities publicly.
+##### Please do not report security vulnerabilities publicly.
 
 ## How to report a bug
  
