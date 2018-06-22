@@ -69,7 +69,12 @@ Testnet Min Stake Age | 10
 ```
 
 
-# Installing TokenPay
+
+
+
+
+
+# Installing TokenPay via SnapCraft
 
 TokenPay has snaps available [with GUI](https://snapcraft.io/tokenpay) and [without GUI](https://snapcraft.io/tokenpayd-v2). Snaps are universal Linux packages that should run on any modern Linux distribution. Consult the [documentation for your own distribution](https://docs.snapcraft.io/core/install) to find out how to install ```snapd``` and gain access to the [snap store](https://snapcraft.io/store)
 
