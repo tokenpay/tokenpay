@@ -238,16 +238,19 @@ sudo snap install --dangerous tokenpayd_1.0_amd64.snap
 
 
 # Contribute
-Code<br />
-TokenPay is controlled by all TokenPay users around the world. If you are a developer, you can use your super-powers to do good and contribute. The TokenPay project is hosted on GitHub. This is where developers work hard on the next version(s) of the software. To get involved with developing TokenPay, check out our detailed contributing guidelines. We credit all contributors to the TokenPay project in every major and minor release.<br />
 
-If you think you've found a bug or a problem with TokenPay, please let us know! First, search our issue tracker to search to see if someone has already reported the problem. If they haven't, click here to open a new issue, and fill out the template with as much information as possible. The more you can tell us about the problem and how it occurred, the more likely we are to fix it. <br />
+TokenPay is controlled by all TokenPay users around the world. If you are a developer, you can use your super-powers to do good and contribute. The TokenPay project is hosted on GitHub. This is where developers work hard on the next version(s) of the software. To get involved with developing TokenPay, check out our detailed contributing guidelines. We credit all contributors to the TokenPay project in every major and minor release.
 
-Please do not report security vulnerabilities publicly.<br />
+If you think you've found a bug or a problem with TokenPay, please let us know! First, search our issue tracker to search to see if someone has already reported the problem. If they haven't, click here to open a new issue, and fill out the template with as much information as possible. The more you can tell us about the problem and how it occurred, the more likely we are to fix it.
 
-**How to report a bug**<br />
-Security-related issues<br />
-Contact the developers privately by sending an e-mail to Team@tokenpay.com with the details of the issue. Do not post the issue on github or anywhere else until the issue has been resolved.<br />
+Please do not report security vulnerabilities publicly.
 
-Code issues<br />
-We would strongly prefer if you create a pull-request on Github in the proper repository with the necessary fix (along with your TPAY address to claim the bounty). For more information, see this link.<br />
+## How to report a bug
+ 
+### Security-related issues
+
+Contact the developers privately by sending an e-mail to Team@tokenpay.com with the details of the issue. Do not post the issue on github or anywhere else until the issue has been resolved.
+
+### Code issues
+
+We would strongly prefer if you create a pull-request on Github in the proper repository with the necessary fix (along with your TPAY address to claim the bounty). For more information, see this link.
