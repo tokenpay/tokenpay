@@ -1,32 +1,80 @@
-# Specifications:
+# TOKENPAY [TPAY] Source Code
 
-  * Total number of coins: 25,000,000 TPAY
-  * Stake interest: 5% annual static inflation
-  * Confirmations: 6 blocks
-  * Coinbase Maturity: 100 blocks
-  * Min stake age: 2 hours
-  * 10 minute PoSv3 difficulty retarget
-  * RPC Port = 8800
-  * P2P Port = 8801
-  * TESTNET RPC Port = 16600
-  * TESTNET P2P Port = 16601
-  * TESTNET Coinbase Maturity: 10
-  * TESTNET Min stake age: 10 minutes
+## Specifications
 
-# Inside:
+Specification | Value
+--- | ---
+Protocol | **PoSv3**
+Block Time | **60 seconds**
+Difficulty Re-target | **10 minutes**
+Nominal Stake Interest | **5% annually for the first year and 1% after**
+Min Stake Age | **2 hours** (no max age)
+P2P Port | 8800
+RPC Port | 8801
 
-  * Tor Network on start up
-  * Ring Signatures for anonymous transactions
-  * Dual key stealth addresses
-  * ‘Zero Knowledge’ proofs
-  * Full decentralization
+### Testnet
 
-# LINKS
+Specification | Value
+--- | ---
+Testnet RPC Port | 16600
+Testnet P2P Port | 16601
+Testnet Coinbase Maturity | 10
+Testnet Min Stake Age | 10
 
-  * [Official Website](http://www.tokenpay.com/)
+### Transactions
+
+| Specification   | Value          |
+| --------------- | -------------- |
+| Min Fee         | **0.0001 TPAY** |
+| Confirmations   | **6**         |
+| Maturity        | **100**        |
 
 
-# Installing TokenPay
+## Resources
+
+* [Blockchain Explorer](http://explorer.tpay.ai)
+* [WhitePaper](https://www.tokenpay.com/whitepaper.pdf)
+
+### Community
+
+* [Telegram](https://t.me/TokenPayTelegram)
+* [Discord](https://discord.gg/HFeehMe)
+* [Twitter](https://www.twitter.com/tokenpay/)
+* [Facebook](https://www.facebook.com/tokenpay/)
+* [Reddit](https://www.reddit.com/r/tokenpay/)
+
+
+## Wallet Download Links
+
+### PC
+- Latest (https://tokenpay.app.box.com/v/tokenpaywindowswallet)
+
+### OSX 
+- Latest (https://tokenpay.app.box.com/v/TokenPayMACWallet)
+
+### Android
+- Latest (https://play.google.com/store/apps/details?id=com.tokenpay.wallet&hl=en)
+
+
+## Useful Paths
+
+### Windows
+```
+%appdata%\TokenPay
+```
+
+### OSX
+```
+~/Library/Application Support/TokenPay/ 
+```
+
+
+
+
+
+
+
+# Installing TokenPay via SnapCraft
 
 TokenPay has snaps available [with GUI](https://snapcraft.io/tokenpay) and [without GUI](https://snapcraft.io/tokenpayd-v2). Snaps are universal Linux packages that should run on any modern Linux distribution. Consult the [documentation for your own distribution](https://docs.snapcraft.io/core/install) to find out how to install ```snapd``` and gain access to the [snap store](https://snapcraft.io/store)
 
@@ -55,11 +103,9 @@ $HOME/snap/tokenpayd-v2/current/.tokenpay
 
 ```
 
-# Building TokenPay (including GUI)
 
-It's worth mentioning that you only have to build from source, if you are testing a change, or if you simply prefer it that way. Otherwise, simply follow the above instructions to get up and running.
 
-## Generic Unix build instructions
+## Unix build instructions
 
 It's recommended you use Ubuntu 18.04, which already has the needed build dependencies, and their proper version in the official repositories. If you are running on Ubuntu 16.04, you will need to install an updated version of ```OpenSSL``` and ```Boost```. 
 
@@ -123,74 +169,21 @@ After the build process completes, you should have two binaries in the ```src```
 Simply copy any one of these in your ```$PATH```.
 
 
-# Building TokenPay snap packages
 
-This is the preferred way of building TokenPay. At the end of this process, you will have a universal package that you can copy to any modern Linux distribution and install it without worrying about dependencies. Snaps are self contained packages, that include all needed dependencies.
+# Contribute
 
-## Prepare the build environment
+TokenPay is controlled by all TokenPay users around the world. If you are a developer, you can use your super-powers to do good and contribute. The TokenPay project is hosted on GitHub. This is where developers work hard on the next version(s) of the software. To get involved with developing TokenPay, check out our detailed contributing guidelines. We credit all contributors to the TokenPay project in every major and minor release.
 
-### Install LXD and snapcraft
+If you think you've found a bug or a problem with TokenPay, please let us know! First, search our issue tracker to search to see if someone has already reported the problem. If they haven't, click here to open a new issue, and fill out the template with as much information as possible. The more you can tell us about the problem and how it occurred, the more likely we are to fix it.
 
-[LXD](https://linuxcontainers.org/) is the evolution of ```LXC```, which stands for ```linux containers```. It allows us to safely build the code inside a disposable container, that gets torn down after the package gets generated. Don't worry, the process is automatic, but we do need to install LXD first. Feel free to [check the documentation specific for your distribution](https://linuxcontainers.org/lxd/getting-started-cli/) and install ```LXD```.
+### Please do not report security vulnerabilities publicly.
 
-For Ubuntu 18.04, the installation process is straight forward. Install ```zfsutils```:
+## How to report a bug
+ 
+### Security-related issues
 
-```bash
-sudo apt-get install zfsutils-linux
-```
+Contact the developers privately by sending an e-mail to Team@tokenpay.com with the details of the issue. Do not post the issue on github or anywhere else until the issue has been resolved.
 
-Then we can install and initialize ```LXD```:
+### Code issues
 
-```bash
-sudo snap install lxd
-```
-
-Configure ```LXD```:
-
-```bash
-sudo lxd init
-```
-
-Simply follow the wizard. In most cases, defaults should be enough.
-
-Now time to install ```snapcraft```:
-
-```bash
-sudo snap install --classic snapcraft
-``` 
-
-### Build the snaps
-
-At this point you should have everything you need to build the snap. So let's get cracking.
-
-There is a ```snap``` folder inside the source tree, that has two ```snapcraft``` recipes and assets needed to generate the packages. Change directory to this folder: 
-
-```bash
-cd $HOME/build/tokenpay/snap
-```
-
-Snapcraft looks for a file called ```snapcraft.yaml``` in the current folder. It uses that file to generate the package from scratch. To build the GUI version, we must link or copy the appropriate recipe to ```snapcraft.yaml```:
-
-```bash
-ln -s snapcraft-gui.yaml snapcraft.yaml
-```
-
-Now all we have to do is run:
-
-```bash
-snapcraft cleanbuild
-```
-
-This will spawn a temporary container running Ubuntu 16.04, build any needed dependencies, then TokenPay, and in the end, generate a snap package. After the process is complete, the snap package will be copied over to your current folder, and the temporary container will be deleted.
-
-### Installing the generated packages
-
-Installing packages from outside the snap store requires an extra flag:
-
-```bash
-# For the GUI version
-sudo snap install --dangerous tokenpay_1.0_amd64.snap
-
-# For the non GUI version
-sudo snap install --dangerous tokenpayd_1.0_amd64.snap
-```
+We would strongly prefer if you create a pull-request on Github in the proper repository with the necessary fix.
