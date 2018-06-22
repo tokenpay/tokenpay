@@ -253,4 +253,4 @@ Contact the developers privately by sending an e-mail to Team@tokenpay.com with 
 
 ### Code issues
 
-We would strongly prefer if you create a pull-request on Github in the proper repository with the necessary fix (along with your TPAY address to claim the bounty). For more information, see this link.
+We would strongly prefer if you create a pull-request on Github in the proper repository with the necessary fix.
