@@ -9,7 +9,7 @@ Nominal Stake Interest | **5% annually for the first year and 1% after**
 Min Stake Age | **2 hours** (no max age)
 P2P Port | 8800
 RPC Port | 8801
-Blockchain Explorer | [Website] (http://explorer.tpay.ai)
+Blockchain Explorer | [Website](http://explorer.tpay.ai)
 
 ### Transactions
 
@@ -33,27 +33,7 @@ Blockchain Explorer | [Website] (http://explorer.tpay.ai)
 
 
 
-## Introduction
-
-TokenpayCore is the main engine on which all decentralized actions take place, it is used when referencing to the back end of the program and takes cares of the network bootstrapping and propogation of data throughout it. It is also in charge of synchronising and verifying the blockchain for each node to make sure it can participate in the network.
-
-The data being propogated are encrypted messages and transactions, you can find more information about the workings of these in other sections of this documentation.
-
-## HTML  (GUI)
-
-TokenPay has a HTML cryptobrowser at the core of its graphical user interface (GUI). One thing you may have noticed is that we strive for the best user experience (UX) and that involves a good graphical interface. We chose to use a combination of HTML and Javascript because this allows web designers and developers to help the project. They are very familiair with creating a good user experience through a simple yet beautiful interface.
-
-![Overview]
-
-![Wallet]
-
-## Hierarchical Deterministic Wallet (HD)
-
-The [Hierarchical Deterministic](https://bitcoin.org/en/glossary/hd-protocol) (HD) key creation and transfer protocol ([BIP32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)), allows users to create [child keys](https://bitcoin.org/en/glossary/child-key) from [parent keys](https://bitcoin.org/en/glossary/parent-key) in a hierarchy.
-In essence this means that you only have to back up your wallet once, all private keys are derived from the mnenomic seed (up to 24 words) and they can be retrieved anytime if you have the seed. This means that you'll never have to worry about backups as long as you have one, coins will never be lost.
-
-
-# Download
+# Wallet Download Links
 
 ## Desktop Wallet
 - Latest (https://tokenpay.app.box.com/v/tokenpaywindowswallet)
