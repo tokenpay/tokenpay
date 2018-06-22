@@ -11,6 +11,17 @@ P2P Port | 8800
 RPC Port | 8801
 Blockchain Explorer | [Website](http://explorer.tpay.ai)
 
+
+### Testnet Specification
+
+Specification | Value
+--- | ---
+Testnet RPC Port | 16600
+Testnet P2P Port | 16601
+Testnet Coinbase Maturity | 10
+Testnet Min Stake Age | 10
+
+
 ### Transactions
 
 | Specification   | Value          |
