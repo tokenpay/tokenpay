@@ -1,0 +1,16 @@
+[Unit]
+Description=TokenPay wallet
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/tokenpayd
+ExecStop=/usr/local/bin/tokenpayd stop
+Restart=always
+RestartSec=5s
+# Change this to the user you want the wallet
+# daemon to run under
+User=tokenpay
+
+[Install]
+WantedBy=multi-user.target
