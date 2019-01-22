@@ -49,6 +49,7 @@ enum
 };
 
 const int64_t GENESIS_BLOCK_TIME = 1503628005;
+const int64_t TESTNET_GENESIS_BLOCK_TIME = 1548152946;
 
 static const int64_t COIN = 100000000;
 static const int64_t CENT = 1000000;
