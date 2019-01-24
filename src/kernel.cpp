@@ -697,8 +697,16 @@ static inline bool CheckStakeKernelHashV2(CStakeModifier* pStakeMod, unsigned in
     }
 
     // Now check if proof-of-stake hash meets target protocol
+    //
     if (CBigNum(hashProofOfStake) > bnTarget)
+    {
+        if (fPrintProofOfStake)
+        {
+            LogPrintf("CheckStakeKernelHash() : PoS hash=%s not meeting target hash=%s", hashProofOfStake.GetHex(), bnTarget.GetHex());
+        }
+
         return false;
+    }
 
     if (fDebug && !fPrintProofOfStake)
     {
@@ -794,11 +802,13 @@ bool CheckKernel(CBlockIndex* pindexPrev, unsigned int nBits, int64_t nTime, con
     if (!block.ReadFromDisk(txindex.pos.nFile, txindex.pos.nBlockPos, false))
         return false;
 
-    if (Params().IsProtocolV3(nTime))
+    if (Params().IsProtocolV3(pindexPrev->nHeight))
     {
         int nDepth;
         if (IsConfirmedInNPrevBlocks(txindex, pindexPrev, nStakeMinConfirmations - 1, nDepth))
+        {
             return false;
+        }
     }
     else
         if (block.GetBlockTime() + nStakeMinAge > nTime)

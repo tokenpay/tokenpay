@@ -1642,6 +1642,11 @@ void CWallet::AvailableCoinsForStaking(std::vector<COutput>& vCoins, unsigned in
         {
             const CWalletTx* pcoin = &(*it).second;
 
+            if (0 == pcoin->GetValueOut())
+            {
+                continue;
+            }
+
             // Filtering by tx timestamp instead of block timestamp may give false positives but never false negatives
             if (pcoin->nTime + nStakeMinAge > nSpendTime)
                 continue;
@@ -1880,6 +1885,10 @@ bool CWallet::SelectCoinsForStaking(int64_t nTargetValue, unsigned int nSpendTim
             break;
 
         int64_t n = pcoin->vout[i].nValue;
+        if (n <= 0)
+        {
+            continue;
+        }
 
         pair<int64_t, pair<const CWalletTx*, unsigned int> > coin = make_pair(n, make_pair(pcoin, i));
 
@@ -1898,6 +1907,7 @@ bool CWallet::SelectCoinsForStaking(int64_t nTargetValue, unsigned int nSpendTim
         };
     }
 
+    LogPrintf("TSBDBG: SelectCoinsForStaking returning with size=%d", setCoinsRet.size());
     return true;
 }
 
@@ -5812,6 +5822,7 @@ bool CWallet::CreateCoinStake(unsigned int nBits, int64_t nSearchInterval, int64
     int64_t nCredit = 0;
     CScript scriptPubKeyKernel;
     CTxDB txdb("r");
+
     BOOST_FOREACH(PAIRTYPE(const CWalletTx*, unsigned int) pcoin, setCoins)
     {
         boost::this_thread::interruption_point();

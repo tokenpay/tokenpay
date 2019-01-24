@@ -3870,6 +3870,7 @@ bool CBlock::SignBlock(CWallet& wallet, int64_t nFees)
 
     if (nSearchTime > nLastCoinStakeSearchTime)
     {
+        LogPrintf("TSBDBG: about to call CreateCoinStake");
         int64_t nSearchInterval = Params().IsProtocolV2(nBestHeight+1) ? 1 : nSearchTime - nLastCoinStakeSearchTime;
         if (wallet.CreateCoinStake(nBits, nSearchInterval, nFees, txCoinStake, key))
         {
