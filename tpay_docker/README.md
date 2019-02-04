@@ -3,6 +3,7 @@
 ## Build the docker image
 
 ```
+cd distrib_folder
 docker build --tag=tpay .  
 ```
 
