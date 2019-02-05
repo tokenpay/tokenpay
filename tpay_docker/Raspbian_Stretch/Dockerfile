@@ -15,6 +15,8 @@ ARG fname_desktop=tokenpay.desktop
 ARG fname_icon=tokenpay_icon.png
 ARG fname_guiwallet=tokenpay
 ARG fname_deamonwallet=tokenpayd
+ARG fname_ssl=libssl.so.1.1
+ARG fname_crypto=libcrypto.so.1.1
 
 # parallel build or not, tune this if need be (use -j1 on rpi, else it'll crash)
 ARG parralel_build=-j1
@@ -52,11 +54,11 @@ RUN cd tokenpay && \
 #make the ARM installer
 RUN mkdir TOKENPAY_INSTALLER_ARM
 RUN cd TOKENPAY_INSTALLER_ARM && \
-	cp /tokenpay/src/tokenpay . && \
-	cp /tokenpay/src/tokenpayd . && \
-	cp /openssl-1.1.0e/libcrypto.so.1.1 . && \
-	cp /openssl-1.1.0e/libssl.so.1.1 . && \
-	cp /tokenpay/src/qt/res/icons/tokenpay_icon.png .
+	cp /tokenpay/src/${fname_guiwallet} . && \
+	cp /tokenpay/src/${fname_deamonwallet} . && \
+	cp /openssl-1.1.0e/${fname_crypto} . && \
+	cp /openssl-1.1.0e/${fname_ssl} . && \
+	cp /tokenpay/src/qt/res/icons/${fname_icon} .
 
 #  leave this file blank
 RUN touch /${install_name}/tokenpay.conf
@@ -97,8 +99,8 @@ RUN echo "libssl-dev qt5-default" >> /${install_name}/${fname_install}
 
 # copy crypto libs to /usr/lib
 RUN echo "echo \"Copying crypto libs to \${TPAY_LIBPATH} :\"" >> /${install_name}/${fname_install}
-RUN echo "cp ./libcrypto.so.1.1 \${TPAY_LIBPATH}" >> /${install_name}/${fname_install}
-RUN echo "cp ./libssl.so.1.1 \${TPAY_LIBPATH}" >> /${install_name}/${fname_install}
+RUN echo "cp ./${fname_crypto} \${TPAY_LIBPATH}" >> /${install_name}/${fname_install}
+RUN echo "cp ./${fname_ssl} \${TPAY_LIBPATH}" >> /${install_name}/${fname_install}
 
 RUN echo "echo \"Copying tokenpay binary to \${TPAY_BINPATH} :\"" >> /${install_name}/${fname_install}
 RUN echo "cp \${TPAY_BIN} \${TPAY_BINPATH}" >> /${install_name}/${fname_install}
