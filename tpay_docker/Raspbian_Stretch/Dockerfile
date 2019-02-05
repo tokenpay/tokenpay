@@ -1,5 +1,24 @@
 FROM raspbian/stretch:latest
 
+# install name
+ARG install_name=TOKENPAY_INSTALLER_RASPBIAN_ARM64
+
+# system dependant paths
+ARG bin_path=/usr/bin
+ARG icon_path=/usr/share/icons
+ARG desktop_path=~/.local/share/applications
+
+# filenames to copy to install folder
+ARG fname_install=install.sh
+ARG fname_uninstall=uninstall.sh
+ARG fname_desktop=tokenpay.desktop
+ARG fname_icon=tokenpay_icon.png
+ARG fname_guiwallet=tokenpay
+ARG fname_deamonwallet=tokenpayd
+
+# parallel build or not, tune this if need be (use -j1 on rpi, else it'll crash)
+ARG parralel_build=-j1
+
 #dependencies
 RUN apt-get update
 RUN apt-get install -y build-essential \
@@ -39,67 +58,66 @@ RUN cd TOKENPAY_INSTALLER_ARM && \
 	cp /openssl-1.1.0e/libssl.so.1.1 . && \
 	cp /tokenpay/src/qt/res/icons/tokenpay_icon.png .
 
-RUN touch /TOKENPAY_INSTALLER_ARM/tokenpay.conf
-RUN touch /TOKENPAY_INSTALLER_ARM/tokenpay.desktop
+#  leave this file blank
+RUN touch /${install_name}/tokenpay.conf
 
-#build the tokenpay.desktop
-RUN echo "#!/usr/bin/env xdg-open" > /TOKENPAY_INSTALLER_ARM/tokenpay.desktop && \
-    echo "[Desktop Entry]" >> /TOKENPAY_INSTALLER_ARM/tokenpay.desktop && \
-	echo "Version=1.0" >> /TOKENPAY_INSTALLER_ARM/tokenpay.desktop && \
-	echo "Type=Application" >> /TOKENPAY_INSTALLER_ARM/tokenpay.desktop && \
-	echo "Terminal=false" >> /TOKENPAY_INSTALLER_ARM/tokenpay.desktop && \
-	echo "Exec=tokenpay" >> /TOKENPAY_INSTALLER_ARM/tokenpay.desktop && \
-	echo "Name=TokenPay Wallet" >> /TOKENPAY_INSTALLER_ARM/tokenpay.desktop && \
-	echo "Comment=TokenPay Wallet" >> /TOKENPAY_INSTALLER_ARM/tokenpay.desktop && \
-	echo "Icon=/usr/share/icons/tokenpay_icon.png" >> /TOKENPAY_INSTALLER_ARM/tokenpay.desktop
+# build the tokenpay.desktop
+RUN touch /${install_name}/${fname_desktop}
+RUN echo "#!/usr/bin/env xdg-open" > /${install_name}/${fname_desktop} && \
+    echo "[Desktop Entry]" >> /${install_name}/${fname_desktop} && \
+	echo "Version=1.0" >> /${install_name}/${fname_desktop} && \
+	echo "Type=Application" >> /${install_name}/${fname_desktop} && \
+	echo "Terminal=false" >> /${install_name}/${fname_desktop} && \
+	echo "Exec=tokenpay" >> /${install_name}/${fname_desktop} && \
+	echo "Name=TokenPay Wallet" >> /${install_name}/${fname_desktop} && \
+	echo "Comment=TokenPay Wallet" >> /${install_name}/${fname_desktop} && \
+	echo "Icon=${icon_path}/${fname_icon}" >> /${install_name}/${fname_desktop}
 
-# build the install.sh script
-RUN echo "#!/bin/sh" > /TOKENPAY_INSTALLER_ARM/install.sh
+#  build the ${fname_install} script
+RUN echo "#!/bin/sh" > /${install_name}/${fname_install}
 
-RUN echo "TPAY_LIBS=./*.so*" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "TPAYD_BIN=./tokenpayd" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "TPAY_BIN=./tokenpay" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "TPAY_ICO=./tokenpay_icon.png" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "TPAY_DSK=./tokenpay.desktop" >> /TOKENPAY_INSTALLER_ARM/install.sh
+RUN echo "TPAYD_BIN=./${fname_deamonwallet}" >> /${install_name}/${fname_install}
+RUN echo "TPAY_BIN=./${fname_guiwallet}" >> /${install_name}/${fname_install}
+RUN echo "TPAY_ICO=./${fname_icon}" >> /${install_name}/${fname_install}
+RUN echo "TPAY_DSK=./${fname_desktop}" >> /${install_name}/${fname_install}
+RUN echo "TPAY_BINPATH=${bin_path}" >> /${install_name}/${fname_install}
+RUN echo "TPAY_ICOPATH=${icon_path}" >> /${install_name}/${fname_install}
+RUN echo "TPAY_DSKPATH=${desktop_path}" >> /${install_name}/${fname_install}
+RUN echo "TPAY_LIBPATH=/usr/lib/" >> /${install_name}/${fname_install}
 
-RUN echo "TPAY_LIBPATH=/usr/lib/" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "TPAY_BINPATH=/usr/bin/" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "TPAY_ICOPATH=/usr/share/icons/" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "TPAY_DSKPATH=~/.local/share/applications/" >> /TOKENPAY_INSTALLER_ARM/install.sh
+RUN echo "apt-get install -y build-essential \\" >> /${install_name}/${fname_install}
+RUN echo "libtool autotools-dev automake \\" >> /${install_name}/${fname_install}
+RUN echo "pkg-config zlib1g-dev libevent-dev \\" >> /${install_name}/${fname_install}
+RUN echo "bsdmainutils git libboost-all-dev \\" >> /${install_name}/${fname_install}
+RUN echo "libseccomp-dev libcap-dev libminiupnpc-dev \\" >> /${install_name}/${fname_install}
+RUN echo "libqt5gui5 libqt5core5a libqt5webkit5-dev \\" >> /${install_name}/${fname_install}
+RUN echo "libqt5dbus5 qttools5-dev qttools5-dev-tools \\" >> /${install_name}/${fname_install}
+RUN echo "libprotobuf-dev protobuf-compiler libqrencode-dev \\" >> /${install_name}/${fname_install}
+RUN echo "libssl-dev qt5-default" >> /${install_name}/${fname_install}
 
-RUN echo "apt-get install -y build-essential \\" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "libtool autotools-dev automake \\" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "pkg-config zlib1g-dev libevent-dev \\" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "bsdmainutils git libboost-all-dev \\" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "libseccomp-dev libcap-dev libminiupnpc-dev \\" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "libqt5gui5 libqt5core5a libqt5webkit5-dev \\" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "libqt5dbus5 qttools5-dev qttools5-dev-tools \\" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "libprotobuf-dev protobuf-compiler libqrencode-dev \\" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "libssl-dev qt5-default" >> /TOKENPAY_INSTALLER_ARM/install.sh
+# copy crypto libs to /usr/lib
+RUN echo "echo \"Copying crypto libs to \${TPAY_LIBPATH} :\"" >> /${install_name}/${fname_install}
+RUN echo "cp ./libcrypto.so.1.1 \${TPAY_LIBPATH}" >> /${install_name}/${fname_install}
+RUN echo "cp ./libssl.so.1.1 \${TPAY_LIBPATH}" >> /${install_name}/${fname_install}
 
-RUN echo "echo \"Copying dependencies to \${TPAY_LIBPATH} :\"" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "for i in \${TPAY_LIBS}; do" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "echo \"- copying \${i}\"" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "cp \${i} \${TPAY_LIBPATH}" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "done" >> /TOKENPAY_INSTALLER_ARM/install.sh
+RUN echo "echo \"Copying tokenpay binary to \${TPAY_BINPATH} :\"" >> /${install_name}/${fname_install}
+RUN echo "cp \${TPAY_BIN} \${TPAY_BINPATH}" >> /${install_name}/${fname_install}
 
-RUN echo "echo \"Copying tokenpay binary to \${TPAY_BINPATH} :\"" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "cp \${TPAY_BIN} \${TPAY_BINPATH}" >> /TOKENPAY_INSTALLER_ARM/install.sh
+RUN echo "echo \"Copying tokenpayd binary to \${TPAY_BINPATH} :\"" >> /${install_name}/${fname_install}
+RUN echo "cp \${TPAY_BIN} \${TPAY_BINPATH}" >> /${install_name}/${fname_install}
 
-RUN echo "echo \"Copying tokenpayd binary to \${TPAY_BINPATH} :\"" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "cp \${TPAY_BIN} \${TPAY_BINPATH}" >> /TOKENPAY_INSTALLER_ARM/install.sh
+RUN echo "echo \"Copying tokenpay icon to \${TPAY_ICOPATH} :\"" >> /${install_name}/${fname_install}
+RUN echo "cp \${TPAY_ICO} \${TPAY_ICOPATH}" >> /${install_name}/${fname_install}
 
-RUN echo "echo \"Copying tokenpay icon to \${TPAY_ICOPATH} :\"" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "cp \${TPAY_ICO} \${TPAY_ICOPATH}" >> /TOKENPAY_INSTALLER_ARM/install.sh
+RUN echo "echo \"Copying tokenpay.desktop to \${TPAY_DSKPATH}\"" >> /${install_name}/${fname_install}
+RUN echo "cp \${TPAY_DSK} \${TPAY_DSKPATH}" >> /${install_name}/${fname_install}
 
-RUN echo "echo \"Copying tokenpay.desktop to \${TPAY_DSKPATH}\"" >> /TOKENPAY_INSTALLER_ARM/install.sh
-RUN echo "cp \${TPAY_DSK} \${TPAY_DSKPATH}" >> /TOKENPAY_INSTALLER_ARM/install.sh
+#  build the ${fname_uninstall} script
+RUN echo "#!/bin/sh" > /${install_name}/${fname_uninstall}
 
-# build the uninstall.sh script
-RUN echo "#!/bin/sh" > /TOKENPAY_INSTALLER_ARM/uninstall.sh
+#  as for now, don't remove ~/.tokenpay folder, maybe the user just want to re-install the wallet for some reason
+RUN echo "rm -rf ${bin_path}/${fname_deamonwallet} ${bin_path}/${fname_guiwallet} ${icon_path}/${fname_icon} ${desktop_path}/${fname_desktop}" >> /${install_name}/${fname_uninstall}
 
-# as for now, don't remove ~/.tokenpay folder, maybe the user just want to re-install the wallet for some reason
-RUN echo "rm -rf /usr/bin/tokenpayd /usr/bin/tokenpay /usr/share/icons/tokenpay_icon.png ~/.local/share/applications/tokenpay.desktop" >> /TOKENPAY_INSTALLER_ARM/uninstall.sh
-
-# build the installer archive
-RUN tar czf TOKENPAY_INSTALLER_ARM.tar.gz TOKENPAY_INSTALLER_ARM
+#  build the installer archive
+RUN tar czf ${install_name}.tar.gz ${install_name}
+	
