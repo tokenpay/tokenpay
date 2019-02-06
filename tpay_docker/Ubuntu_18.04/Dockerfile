@@ -19,9 +19,11 @@ ARG fname_deamonwallet=tokenpayd
 # parallel build or not, tune this if need be
 ARG parralel_build=-j8
 
-# dependencies
-RUN apt-get update
-RUN apt-get install -y build-essential \
+# pckg manager
+ARG pckg_manager=apt-get
+
+# pckg list
+ARG apt_pckg_list="build-essential \
      libtool autotools-dev automake \
      pkg-config zlib1g-dev libevent-dev \
      bsdmainutils git libboost-all-dev \
@@ -29,8 +31,11 @@ RUN apt-get install -y build-essential \
      libqt5gui5 libqt5core5a libqt5webkit5-dev \
      libqt5dbus5 qttools5-dev qttools5-dev-tools \
      libprotobuf-dev protobuf-compiler libqrencode-dev \
-     libssl-dev qt5-default
-RUN apt-get install -y wget
+     libssl-dev qt5-default wget"
+
+# dependencies
+RUN apt-get update
+RUN apt-get install -y ${apt_pckg_list}
 
 # tpay
 RUN git clone --recurse-submodules https://github.com/tokenpay/tokenpay
@@ -72,15 +77,7 @@ RUN echo "TPAY_BINPATH=${bin_path}" >> /${install_name}/${fname_install}
 RUN echo "TPAY_ICOPATH=${icon_path}" >> /${install_name}/${fname_install}
 RUN echo "TPAY_DSKPATH=${desktop_path}" >> /${install_name}/${fname_install}
 
-RUN echo "apt-get install -y build-essential \\" >> /${install_name}/${fname_install}
-RUN echo "libtool autotools-dev automake \\" >> /${install_name}/${fname_install}
-RUN echo "pkg-config zlib1g-dev libevent-dev \\" >> /${install_name}/${fname_install}
-RUN echo "bsdmainutils git libboost-all-dev \\" >> /${install_name}/${fname_install}
-RUN echo "libseccomp-dev libcap-dev libminiupnpc-dev \\" >> /${install_name}/${fname_install}
-RUN echo "libqt5gui5 libqt5core5a libqt5webkit5-dev \\" >> /${install_name}/${fname_install}
-RUN echo "libqt5dbus5 qttools5-dev qttools5-dev-tools \\" >> /${install_name}/${fname_install}
-RUN echo "libprotobuf-dev protobuf-compiler libqrencode-dev \\" >> /${install_name}/${fname_install}
-RUN echo "libssl-dev qt5-default" >> /${install_name}/${fname_install}
+RUN echo "${pckg_manager} install -y ${apt_pckg_list}" >> /${install_name}/${fname_install}
 
 RUN echo "echo \"Copying tokenpay binary to \${TPAY_BINPATH} :\"" >> /${install_name}/${fname_install}
 RUN echo "cp \${TPAY_BIN} \${TPAY_BINPATH}" >> /${install_name}/${fname_install}
