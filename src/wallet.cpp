@@ -2001,21 +2001,15 @@ bool CWallet::CreateTransaction(const std::vector<std::pair<CScript, int64_t> >&
                 // NOTE: this depends on the exact behaviour of GetMinFee
                 if (nFeeRet < MIN_TX_FEE && nChange > 0 && nChange < CENT)
                 {
+                    // TokenPay: here we charge the sender some fee even if he has fSubtractFeeFromAmount flag set
+                    // why: because this way we avoid a dust change UTXO. So basically we don't charge the sender,
+                    // we just no longer return him some very very dust change.
+                    //
                     int64_t nMoveToFee = min(nChange, MIN_TX_FEE - nFeeRet);
-                    nFeeRet += nMoveToFee;
-
-                    if (false == fSubtractFeeFromAmount)
+                    if (nChange - nMoveToFee <= 0)
                     {
+                        nFeeRet += nMoveToFee;
                         nChange -= nMoveToFee;
-                    }
-                    else
-                    {
-                        if (wtxNew.vout[0].nValue - nMoveToFee <= 0)
-                        {
-                            return false;
-                        }
-
-                        wtxNew.vout[0].nValue -= nMoveToFee;
                     }
                 };
 
