@@ -415,8 +415,8 @@ Value sendtoaddress(const Array& params, bool fHelp)
 {
     if (fHelp || params.size() < 2 || params.size() > 5)
         throw std::runtime_error(
-            "sendtoaddress <tokenpayaddress> <amount> [comment] [comment-to] [narration]\n" // Exchanges use the comments internally...
-            "sendtoaddress <tokenpayaddress> <amount> [narration]\n"
+            "sendtoaddress <tokenpayaddress> <amount> [subtractfeefromamount] [comment] [comment-to] [narration]\n" // Exchanges use the comments internally...
+            "sendtoaddress <tokenpayaddress> <amount> [subtractfeefromamount] [narration]\n"
             "<amount> is a real and is rounded to the nearest 0.000001"
             + HelpRequiringPassphrase());
 
@@ -435,6 +435,9 @@ Value sendtoaddress(const Array& params, bool fHelp)
     // Amount
     int64_t nAmount = AmountFromValue(params[1]);
 
+    // Subtract fee from amount
+    bool fSubtractFeeFromAmount{params.size() > 2 && params[2].type() != null_type && "true" == params[2].get_str()};
+
     CWalletTx wtx;
     std::string sNarr;
 
@@ -448,7 +451,7 @@ Value sendtoaddress(const Array& params, bool fHelp)
     if (sNarr.length() > 24)
         throw std::runtime_error("Narration must be 24 characters or less.");
 
-    std::string strError = pwalletMain->SendMoneyToDestination(address.Get(), nAmount, sNarr, wtx);
+    std::string strError = pwalletMain->SendMoneyToDestination(address.Get(), nAmount, sNarr, wtx, false, fSubtractFeeFromAmount);
 
     if (strError != "")
         throw JSONRPCError(RPC_WALLET_ERROR, strError);

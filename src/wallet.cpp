@@ -1907,13 +1907,30 @@ bool CWallet::SelectCoinsForStaking(int64_t nTargetValue, unsigned int nSpendTim
         };
     }
 
-    LogPrintf("TSBDBG: SelectCoinsForStaking returning with size=%d", setCoinsRet.size());
     return true;
 }
 
 
-bool CWallet::CreateTransaction(const std::vector<std::pair<CScript, int64_t> >& vecSend, CWalletTx& wtxNew, int64_t& nFeeRet, int32_t& nChangePos, const CCoinControl* coinControl)
+bool CWallet::CreateTransaction(const std::vector<std::pair<CScript, int64_t> >& vecSend, CWalletTx& wtxNew, int64_t& nFeeRet, int32_t& nChangePos, const CCoinControl* coinControl, bool fSubtractFeeFromAmount)
 {
+    if (vecSend.empty())
+    {
+        return false;
+    }
+
+    if (fSubtractFeeFromAmount)
+    {
+        if (1 != vecSend.size())
+        {
+            return false;
+        }
+
+        if (vecSend[0].second - nTransactionFee <= 0)
+        {
+            return false;
+        }
+    }
+
     int64_t nValue = 0;
     BOOST_FOREACH (const PAIRTYPE(CScript, int64_t)& s, vecSend)
     {
@@ -1922,8 +1939,10 @@ bool CWallet::CreateTransaction(const std::vector<std::pair<CScript, int64_t> >&
         nValue += s.second;
     };
 
-    if (vecSend.empty() || nValue < 0)
+    if (nValue < 0)
+    {
         return false;
+    }
 
     wtxNew.BindWallet(this);
 
@@ -1939,13 +1958,30 @@ bool CWallet::CreateTransaction(const std::vector<std::pair<CScript, int64_t> >&
                 wtxNew.vout.clear();
                 wtxNew.fFromMe = true;
 
-                int64_t nTotalValue = nValue + nFeeRet;
-                double dPriority = 0;
-                // vouts to the payees
-                BOOST_FOREACH(const PAIRTYPE(CScript, int64_t)& s, vecSend)
+                int64_t nTotalValue{nValue};
+                if (false == fSubtractFeeFromAmount)
                 {
-                    wtxNew.vout.push_back(CTxOut(s.second, s.first));
-                };
+                    nTotalValue += nFeeRet;
+                }
+
+                double dPriority = 0;
+
+                // vouts to the payees
+                if (fSubtractFeeFromAmount)
+                {
+                    assert(1 == vecSend.size());
+                    assert(vecSend[0].second == nTotalValue);
+                    assert(nTotalValue - nFeeRet > 0);
+
+                    wtxNew.vout.push_back(CTxOut(nTotalValue - nFeeRet, vecSend[0].first));
+                }
+                else
+                {
+                    BOOST_FOREACH(const PAIRTYPE(CScript, int64_t)& s, vecSend)
+                    {
+                        wtxNew.vout.push_back(CTxOut(s.second, s.first));
+                    }
+                }
 
                 // Choose coins to use
                 set<pair<const CWalletTx*,unsigned int> > setCoins;
@@ -1959,15 +1995,28 @@ bool CWallet::CreateTransaction(const std::vector<std::pair<CScript, int64_t> >&
                     dPriority += (double)nCredit * pcoin.first->GetDepthInMainChain();
                 };
 
-                int64_t nChange = nValueIn - nValue - nFeeRet;
+                int64_t nChange = nValueIn - nTotalValue;
                 // if sub-cent change is required, the fee must be raised to at least MIN_TX_FEE
                 // or until nChange becomes zero
                 // NOTE: this depends on the exact behaviour of GetMinFee
                 if (nFeeRet < MIN_TX_FEE && nChange > 0 && nChange < CENT)
                 {
                     int64_t nMoveToFee = min(nChange, MIN_TX_FEE - nFeeRet);
-                    nChange -= nMoveToFee;
                     nFeeRet += nMoveToFee;
+
+                    if (false == fSubtractFeeFromAmount)
+                    {
+                        nChange -= nMoveToFee;
+                    }
+                    else
+                    {
+                        if (wtxNew.vout[0].nValue - nMoveToFee <= 0)
+                        {
+                            return false;
+                        }
+
+                        wtxNew.vout[0].nValue -= nMoveToFee;
+                    }
                 };
 
                 if (nChange > 0)
@@ -2060,7 +2109,7 @@ bool CWallet::CreateTransaction(const std::vector<std::pair<CScript, int64_t> >&
 
 
 
-bool CWallet::CreateTransaction(CScript scriptPubKey, int64_t nValue, std::string& sNarr, CWalletTx& wtxNew, int64_t& nFeeRet, const CCoinControl* coinControl)
+bool CWallet::CreateTransaction(CScript scriptPubKey, int64_t nValue, std::string& sNarr, CWalletTx& wtxNew, int64_t& nFeeRet, const CCoinControl* coinControl, bool fSubtractFeeFromAmount)
 {
     std::vector<std::pair<CScript, int64_t> > vecSend;
     vecSend.push_back(make_pair(scriptPubKey, nValue));
@@ -2083,7 +2132,7 @@ bool CWallet::CreateTransaction(CScript scriptPubKey, int64_t nValue, std::strin
     //    narration output will be for preceding output
 
     int nChangePos;
-    bool rv = CreateTransaction(vecSend, wtxNew, nFeeRet, nChangePos, coinControl);
+    bool rv = CreateTransaction(vecSend, wtxNew, nFeeRet, nChangePos, coinControl, fSubtractFeeFromAmount);
 
     // -- narration will be added to mapValue later in FindStealthTransactions From CommitTransaction
     return rv;
@@ -6116,7 +6165,7 @@ bool CWallet::CommitTransaction(CWalletTx& wtxNew)
 
 
 
-std::string CWallet::SendMoney(CScript scriptPubKey, int64_t nValue, std::string& sNarr, CWalletTx& wtxNew, bool fAskFee)
+std::string CWallet::SendMoney(CScript scriptPubKey, int64_t nValue, std::string& sNarr, CWalletTx& wtxNew, bool fAskFee, bool fSubtractFeeFromAmount)
 {
     int64_t nFeeRequired;
 
@@ -6134,18 +6183,29 @@ std::string CWallet::SendMoney(CScript scriptPubKey, int64_t nValue, std::string
         return strError;
     };
 
-    if (!CreateTransaction(scriptPubKey, nValue, sNarr, wtxNew, nFeeRequired))
+    if (!CreateTransaction(scriptPubKey, nValue, sNarr, wtxNew, nFeeRequired, NULL, fSubtractFeeFromAmount))
     {
-        std::string strError;
-        if (nValue + nFeeRequired > GetBalance())
-            strError = strprintf(_("Error: This transaction requires a transaction fee of at least %s because of its amount, complexity, or use of recently received funds  "), FormatMoney(nFeeRequired).c_str());
+        std::string strError{_("Error: Transaction creation failed  ")};
+        if (fSubtractFeeFromAmount)
+        {
+            if (nValue - nFeeRequired <= 0)
+            {
+                strError = strprintf(_("Error: This transaction requires a transaction fee of at least %s because of its amount, complexity, or use of recently received funds, yet this fee cannot be subtracted from the payment amount  "), FormatMoney(nFeeRequired).c_str());
+            }
+        }
         else
-            strError = _("Error: Transaction creation failed  ");
+        {
+            if (nValue + nFeeRequired > GetBalance())
+            {
+                strError = strprintf(_("Error: This transaction requires a transaction fee of at least %s because of its amount, complexity, or use of recently received funds  "), FormatMoney(nFeeRequired).c_str());
+            }
+        }
+
         LogPrintf("SendMoney() : %s", strError.c_str());
         return strError;
     };
 
-    if (fAskFee && !uiInterface.ThreadSafeAskFee(nFeeRequired, _("Sending...")))
+    if (fAskFee && false == fSubtractFeeFromAmount && !uiInterface.ThreadSafeAskFee(nFeeRequired, _("Sending...")))
         return "ABORTED";
 
     if (!CommitTransaction(wtxNew))
@@ -6156,7 +6216,7 @@ std::string CWallet::SendMoney(CScript scriptPubKey, int64_t nValue, std::string
 
 
 
-std::string CWallet::SendMoneyToDestination(const CTxDestination& address, int64_t nValue, std::string& sNarr, CWalletTx& wtxNew, bool fAskFee)
+std::string CWallet::SendMoneyToDestination(const CTxDestination& address, int64_t nValue, std::string& sNarr, CWalletTx& wtxNew, bool fAskFee, bool fSubtractFeeFromAmount)
 {
     // Check amount
     if (nValue <= 0)
@@ -6181,7 +6241,7 @@ std::string CWallet::SendMoneyToDestination(const CTxDestination& address, int64
     } else
         scriptPubKey.SetDestination(address);
 
-    std::string rv = SendMoney(scriptPubKey, nValue, sNarr, wtxNew, fAskFee);
+    std::string rv = SendMoney(scriptPubKey, nValue, sNarr, wtxNew, fAskFee, fSubtractFeeFromAmount);
 
     if (address.type() == typeid(CExtKeyPair) && rv == "")
         ExtKeyUpdateLooseKey(ek, nChildKey, true);
