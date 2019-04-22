@@ -15,3 +15,5 @@ chmod 755 /usr/share/icons/tokenpay_icon.png
 chmod 755 /home/$SUDO_USER/.local/share/applications/tokenpay.desktop
 chmod 755 /usr/bin/tokenpay
 chmod 755 /usr/bin/tokenpayd
+chmod 755 /usr/local/lib/libssl.so.1.1
+chmod 755 /usr/local/lib/libcrypto.so.1.1
