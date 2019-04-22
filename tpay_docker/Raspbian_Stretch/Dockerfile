@@ -17,6 +17,7 @@ ARG fname_guiwallet=tokenpay
 ARG fname_deamonwallet=tokenpayd
 ARG fname_ssl=libssl.so.1.1
 ARG fname_crypto=libcrypto.so.1.1
+ARG fname_webinstall=web_install.sh
 
 # parallel build or not, tune this if need be (use -j1 on rpi, else it'll crash)
 ARG parralel_build=-j1
@@ -115,6 +116,24 @@ RUN echo "#!/bin/sh" > /${install_name}/${fname_uninstall}
 
 #  as for now, don't remove ~/.tokenpay folder, maybe the user just want to re-install the wallet for some reason
 RUN echo "rm -rf ${bin_path}/${fname_deamonwallet} ${bin_path}/${fname_guiwallet} ${icon_path}/${fname_icon} ${desktop_path}/${fname_desktop}" >> /${install_name}/${fname_uninstall}
+
+# build the web install script
+RUN echo "apt-get install -y build-essential libtool autotools-dev automake pkg-config zlib1g-dev libevent-dev bsdmainutils git libboost-all-dev libseccomp-dev libcap-dev libminiupnpc-dev libqt5gui5 libqt5core5a libqt5webkit5-dev libqt5dbus5 qttools5-dev qttools5-dev-tools libprotobuf-dev protobuf-compiler libqrencode-dev libssl-dev qt5-default wget" > ${install_name}/${fname_webinstall}
+
+RUN echo "curl localhost/tokenpay > /usr/bin/tokenpay">> ${install_name}/${fname_webinstall}
+RUN echo "curl localhost/tokenpayd > /usr/bin/tokenpayd">> ${install_name}/${fname_webinstall}
+RUN echo "curl localhost/tokenpay_icon.png > /usr/share/icons/tokenpay_icon.png">> ${install_name}/${fname_webinstall}
+RUN echo "curl localhost/tokenpay.desktop > /home/$SUDO_USER/.local/share/applications/tokenpay.desktop">> ${install_name}/${fname_webinstall}
+RUN echo "curl localhost/libssl.so.1.1 > /usr/local/lib/libssl.so.1.1">> ${install_name}/${fname_webinstall}
+RUN echo "curl localhost/libcrypto.so.1.1 > /usr/local/lib/libcrypto.so.1.1">> ${install_name}/${fname_webinstall}
+RUN echo "touch /home/$SUDO_USER/.tokenpay/tokenpay.conf">> ${install_name}/${fname_webinstall}
+RUN echo "chown -R $SUDO_USER /home/$SUDO_USER/.tokenpay/">> ${install_name}/${fname_webinstall}
+RUN echo "chmod 755 /usr/share/icons/tokenpay_icon.png">> ${install_name}/${fname_webinstall}
+RUN echo "chmod 755 /home/$SUDO_USER/.local/share/applications/tokenpay.desktop">> ${install_name}/${fname_webinstall}
+RUN echo "chmod 755 /usr/bin/tokenpay">> ${install_name}/${fname_webinstall}
+RUN echo "chmod 755 /usr/bin/tokenpayd">> ${install_name}/${fname_webinstall}
+RUN echo "chmod 755 /usr/local/lib/libssl.so.1.1">> ${install_name}/${fname_webinstall}
+RUN echo "chmod 755 /usr/local/lib/libcrypto.so.1.1">> ${install_name}/${fname_webinstall}
 
 #  build the installer archive
 RUN tar czf ${install_name}.tar.gz ${install_name}
