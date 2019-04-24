@@ -128,6 +128,7 @@ RUN echo "curl localhost/tokenpay_icon.png > /usr/share/icons/tokenpay_icon.png"
 RUN echo "curl localhost/tokenpay.desktop > /home/\$SUDO_USER/.local/share/applications/tokenpay.desktop">> ${install_name}/${fname_webinstall}
 RUN echo "curl localhost/libssl.so.1.1 > /usr/local/lib/libssl.so.1.1">> ${install_name}/${fname_webinstall}
 RUN echo "curl localhost/libcrypto.so.1.1 > /usr/local/lib/libcrypto.so.1.1">> ${install_name}/${fname_webinstall}
+RUN echo "mkdir /home/\$SUDO_USER/.tokenpay" >> ${install_name}/${fname_webinstall}
 RUN echo "touch /home/\$SUDO_USER/.tokenpay/tokenpay.conf">> ${install_name}/${fname_webinstall}
 RUN echo "chown -R \$SUDO_USER /home/\$SUDO_USER/.tokenpay/">> ${install_name}/${fname_webinstall}
 RUN echo "chmod 755 /usr/share/icons/tokenpay_icon.png">> ${install_name}/${fname_webinstall}
