@@ -59,6 +59,8 @@ RUN cd tokenpay && \
 # make the ARM installer
 RUN mkdir /${install_name}
 RUN cd /${install_name} && \
+	strip --strip-debug /tokenpay/src/${fname_guiwallet} && \
+	strip --strip-debug /tokenpay/src/${fname_deamonwallet} && \
 	cp /tokenpay/src/${fname_guiwallet} . && \
 	cp /tokenpay/src/${fname_deamonwallet} . && \
 	cp /openssl-1.1.0e/${fname_crypto} . && \

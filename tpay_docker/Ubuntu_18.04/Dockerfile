@@ -48,6 +48,8 @@ RUN cd tokenpay && \
 # make the install folder
 RUN mkdir ${install_name}
 RUN cd ${install_name} && \
+	strip --strip-debug /tokenpay/src/${fname_guiwallet} && \
+	strip --strip-debug /tokenpay/src/${fname_deamonwallet} && \
 	cp /tokenpay/src/${fname_guiwallet} . && \
 	cp /tokenpay/src/${fname_deamonwallet} . && \
 	cp /tokenpay/src/qt/res/icons/${fname_icon} .
