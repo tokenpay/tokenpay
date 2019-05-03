@@ -24,14 +24,14 @@ docker ps
 ### Retrieve the install archive 
 
 ```bash
-docker cp image_name:/TOKENPAY_INSTALLER_x86-x64.tar.gz .
+docker cp image_name:/TOKENPAY_INSTALLER_distrib_name_x86-x64.tar.gz .
 ```
 
 # How to install TPAY wallet using the install archive :
 
 ```bash
-tar xzf TOKENPAY_INSTALLER_x86-x64.tar.gz
-cd TPAY_INSTALLER_x86-x64.tar.gz
+tar xzf TOKENPAY_INSTALLER_distrib_name_x86-x64.tar.gz
+cd TOKENPAY_INSTALLER_distrib_name_x86-x64
 chmod +x install.sh
 sudo ./install.sh # This operation will take several minutes, depending on your connection
 ```
